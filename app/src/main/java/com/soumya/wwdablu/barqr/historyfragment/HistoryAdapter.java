@@ -3,6 +3,7 @@ package com.soumya.wwdablu.barqr.historyfragment;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.soumya.wwdablu.barqr.R;
@@ -54,7 +55,30 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         public void bind(int position) {
 
-            binder.setHistPojo(historyPojos.get(position));
+            HistoryPojo historyPojo = historyPojos.get(position);
+
+            //Show the type of data
+            binder.tvScanType.setText(HistoryDataHandler.getScanTypeFriendlyName(historyPojo.rawScanData));
+
+            //Show the action that can be performed on the data
+            binder.tvScanData.setText(HistoryDataHandler.getScanDataInFriendlyFormat(historyPojo.rawScanData));
+
+            //Show the data source accordingly
+            if(historyPojo.rawScanType.toLowerCase().contains("QR_".toLowerCase())) {
+                binder.ivScanType.setImageResource(R.drawable.qrcode_scan);
+            }
+
+            this.binder.getRoot().setOnClickListener(clickListener);
         }
+
+        private View.OnClickListener clickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                HistoryDataHandler.performActionOn(binder.getRoot().getContext(),
+                        historyPojos.get(getAdapterPosition()).rawScanData);
+            }
+        };
     }
 }

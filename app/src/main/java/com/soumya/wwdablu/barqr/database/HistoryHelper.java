@@ -33,8 +33,8 @@ public class HistoryHelper {
         SQLiteDatabase sqLiteDatabase = database.getWritableDatabase();
 
         ContentValues insertValues = new ContentValues();
-        insertValues.put(BarQrContract.History.TYPE, historyPojo.scanType);
-        insertValues.put(BarQrContract.History.DATA, historyPojo.scanData);
+        insertValues.put(BarQrContract.History.TYPE, historyPojo.rawScanType);
+        insertValues.put(BarQrContract.History.DATA, historyPojo.rawScanData);
         sqLiteDatabase.insert(BarQrContract.History.TABLE, null, insertValues);
         sqLiteDatabase.close();
     }
@@ -52,8 +52,8 @@ public class HistoryHelper {
             do {
 
                 HistoryPojo historyPojo = new HistoryPojo();
-                historyPojo.scanType = cursor.getString(cursor.getColumnIndex(BarQrContract.History.TYPE));
-                historyPojo.scanData = cursor.getString(cursor.getColumnIndex(BarQrContract.History.DATA));
+                historyPojo.rawScanType = cursor.getString(cursor.getColumnIndex(BarQrContract.History.TYPE));
+                historyPojo.rawScanData = cursor.getString(cursor.getColumnIndex(BarQrContract.History.DATA));
 
                 historyList.add(historyPojo);
 

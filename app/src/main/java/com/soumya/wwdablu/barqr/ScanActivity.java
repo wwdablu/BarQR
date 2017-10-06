@@ -32,14 +32,14 @@ public class ScanActivity extends AppCompatActivity {
         if(result != null) {
             if(result.getContents() == null) {
 
-                resultIntent.putExtra("scanType", "");
-                resultIntent.putExtra("scanData", "");
+                resultIntent.putExtra("rawScanType", "");
+                resultIntent.putExtra("rawScanData", "");
                 resultCode = RESULT_CANCELED;
 
             } else {
 
-                resultIntent.putExtra("scanType", result.getFormatName());
-                resultIntent.putExtra("scanData", result.getContents());
+                resultIntent.putExtra("rawScanType", result.getFormatName());
+                resultIntent.putExtra("rawScanData", result.getContents());
                 resultCode = RESULT_OK;
             }
         } else {

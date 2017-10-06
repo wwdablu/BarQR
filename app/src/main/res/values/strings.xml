@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BarQR</string>
+    <string name="choose_email_app">Select app to send E-Mail</string>
+    <string name="choose_sms_app">Select app to send SMS</string>
+    <string name="choose_phone_app">Select app to call</string>
+    <string name="clear_all">Clear All</string>
 </resources>

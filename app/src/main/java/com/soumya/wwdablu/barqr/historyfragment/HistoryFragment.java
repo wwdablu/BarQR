@@ -72,8 +72,8 @@ public class HistoryFragment extends Fragment {
                 if(Activity.RESULT_OK == resultCode) {
 
                     HistoryPojo historyPojo = new HistoryPojo();
-                    historyPojo.scanType = data.getStringExtra("scanType");
-                    historyPojo.scanData = data.getStringExtra("scanData");
+                    historyPojo.rawScanType = data.getStringExtra("rawScanType");
+                    historyPojo.rawScanData = data.getStringExtra("rawScanData");
                     historyHelper.addHistoryData(historyPojo);
                     historyAdapter.addHistory(historyPojo);
                 }
