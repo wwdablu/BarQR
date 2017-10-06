@@ -6,14 +6,15 @@ The application uses Zxing library to scan both bar codes and QR codes. The appl
 * Note, VCard support is not present.
 
 # Type and Data
-* Web URL
+* Web URL  
     Launches the browser and opens the URL
     
-* E-Mail
+* E-Mail  
     Launch the mail client with the to, body and subject populated from the QR data
     
-* SMS
+* SMS  
     Launch the SMS application with the to and body populated from the QR data
     
-* PHONE
+* PHONE  
     Launch the dialer application with the number to dial.
+
