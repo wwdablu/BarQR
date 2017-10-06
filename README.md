@@ -18,3 +18,5 @@ The application uses Zxing library to scan both bar codes and QR codes. The appl
 * PHONE  
     Launch the dialer application with the number to dial.
 
+# Screenshot
+![Phone Portrait](https://github.com/wwdablu/BarQR/blob/master/screenshot/screenshot.png)
