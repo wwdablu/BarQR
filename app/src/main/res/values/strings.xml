@@ -4,4 +4,8 @@
     <string name="choose_sms_app">Select app to send SMS</string>
     <string name="choose_phone_app">Select app to call</string>
     <string name="clear_all">Clear All</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="clear_history">Clear History</string>
+    <string name="clear_history_msg">Do you want to clear off all records from the history?</string>
 </resources>

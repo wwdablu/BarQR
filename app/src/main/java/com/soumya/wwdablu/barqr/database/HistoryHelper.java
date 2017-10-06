@@ -66,4 +66,11 @@ public class HistoryHelper {
 
         return historyList;
     }
+
+    public void clearAllHistory() {
+
+        SQLiteDatabase sqLiteDatabase = database.getWritableDatabase();
+        sqLiteDatabase.delete(BarQrContract.History.TABLE, null, null);
+        sqLiteDatabase.close();
+    }
 }

@@ -1,13 +1,18 @@
 package com.soumya.wwdablu.barqr.historyfragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -40,6 +45,8 @@ public class HistoryFragment extends Fragment {
         historyAdapter = new HistoryAdapter();
         binding.rvHistory.setAdapter(historyAdapter);
 
+        setHasOptionsMenu(true);
+
         return binding.getRoot();
     }
 
@@ -52,15 +59,6 @@ public class HistoryFragment extends Fragment {
             historyAdapter.addHistory(pojo);
         }
     }
-
-    private View.OnClickListener fabClickListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), ScanActivity.class);
-            startActivityForResult(intent, SCAN_REQ_CODE);
-        }
-    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -83,4 +81,45 @@ public class HistoryFragment extends Fragment {
                 super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.hist_list, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.menu_clear:
+                new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.clear_history)
+                    .setMessage(R.string.clear_history_msg)
+                    .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            HistoryHelper.getInstance(getActivity().getApplicationContext()).clearAllHistory();
+                            historyAdapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(R.string.action_cancel, null)
+                    .create()
+                    .show();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private View.OnClickListener fabClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getActivity(), ScanActivity.class);
+            startActivityForResult(intent, SCAN_REQ_CODE);
+        }
+    };
 }
