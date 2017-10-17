@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/wwdablu/BarQR.svg?branch=master)](https://travis-ci.org/wwdablu/BarQR)
-
 # BarQR
 Application to scan and fetch barcode and QR code data using zxing library.
 
