@@ -1,4 +1,5 @@
 language: android
+sudo: false
 env:
   global:
     - ANDROID_TARGET=google_apis-23
