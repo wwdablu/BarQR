@@ -1,0 +1,17 @@
+language: android
+jdk: oraclejdk8
+env:
+  matrix:
+    - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
+android:
+  components:
+    - build-tools-25.0.3
+    - android-23
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-21
+    - extra-android-support
+    - extra-android-m2repository
+  licenses:
+    - 'android-sdk-license-.+'
+script:
+- chmod +x ./gradlew
