@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.StringDef;
+import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.soumya.wwdablu.barqr.R;
@@ -11,25 +12,27 @@ import com.soumya.wwdablu.barqr.R;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class HistoryDataHandler {
+class HistoryDataHandler {
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
-            TYPE_WEB_URL,
-            TYPE_PLAIN_TEXT,
-            TYPE_VCARD,
-            TYPE_EMAIL,
-            TYPE_SMS,
-            TYPE_PHONE
+        TYPE_WEB_URL,
+        TYPE_PLAIN_TEXT,
+        TYPE_VCARD,
+        TYPE_EMAIL,
+        TYPE_SMS,
+        TYPE_PHONE,
+        TYPE_UNKNOWN
     })
 
-    public @interface ScanType {};
+    public @interface ScanType {}
     public static final String TYPE_WEB_URL = "type.web.url";
     public static final String TYPE_PLAIN_TEXT = "type.plain.text";
     public static final String TYPE_VCARD = "type.vcard";
     public static final String TYPE_EMAIL = "type.email";
     public static final String TYPE_SMS = "type.sms";
     public static final String TYPE_PHONE = "type.phone";
+    public static final String TYPE_UNKNOWN = "type.unknown";
 
     //VCard Identifier
     private static final String VCARD_BEGIN = "BEGIN:VCARD";
@@ -50,6 +53,11 @@ public class HistoryDataHandler {
      */
     public static @ScanType String getScanTypeFrom(String rawScanData) {
 
+        //Guard check
+        if(TextUtils.isEmpty(rawScanData)) {
+            return TYPE_UNKNOWN;
+        }
+
         //Check if the rawScanData if a Web URL
         if(URLUtil.isValidUrl(rawScanData)) {
             return TYPE_WEB_URL;
@@ -61,17 +69,20 @@ public class HistoryDataHandler {
         }
 
         //Check if the rawScanData is Email
-        else if (rawScanData.substring(0, 7).toUpperCase().contentEquals(MAIL_TAG)) {
+        else if (rawScanData.length() >= 6 &&
+                rawScanData.substring(0, 7).toUpperCase().contentEquals(MAIL_TAG)) {
             return TYPE_EMAIL;
         }
 
         //Check if the rawScanData is SMS
-        else if (rawScanData.substring(0, 6).toUpperCase().contentEquals(SMS_TAG)) {
+        else if (rawScanData.length() >= 6 &&
+                rawScanData.substring(0, 6).toUpperCase().contentEquals(SMS_TAG)) {
             return TYPE_SMS;
         }
 
         //Check if the rawScanData is Phone
-        else if (rawScanData.substring(0, 4).toUpperCase().contentEquals(PHONE_TAG)) {
+        else if (rawScanData.length() >= 4 &&
+                rawScanData.substring(0, 4).toUpperCase().contentEquals(PHONE_TAG)) {
             return TYPE_PHONE;
         }
 

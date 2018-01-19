@@ -1,7 +1,10 @@
 package com.soumya.wwdablu.barqr.historyfragment;
 
-public class HistoryPojo {
+import org.immutables.value.Value;
 
-    public String rawScanType;
-    public String rawScanData;
+@Value.Immutable
+public abstract class HistoryPojo {
+
+    public abstract String rawScanType();
+    public abstract String rawScanData();
 }

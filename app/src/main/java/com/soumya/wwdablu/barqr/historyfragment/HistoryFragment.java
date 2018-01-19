@@ -1,14 +1,13 @@
 package com.soumya.wwdablu.barqr.historyfragment;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +28,7 @@ public class HistoryFragment extends Fragment {
 
     private HistoryAdapter historyAdapter;
     private HistoryHelper historyHelper;
+    private FragmentHistoryBinding binding;
 
     @Nullable
     @Override
@@ -36,12 +36,12 @@ public class HistoryFragment extends Fragment {
 
         historyHelper = HistoryHelper.getInstance(getActivity().getApplicationContext());
 
-        FragmentHistoryBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_history,
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_history,
                 container, false);
 
         binding.fabScanNew.setOnClickListener(fabClickListener);
 
-        binding.rvHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.rvHistory.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         historyAdapter = new HistoryAdapter();
         binding.rvHistory.setAdapter(historyAdapter);
 
@@ -55,6 +55,8 @@ public class HistoryFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         LinkedList<HistoryPojo> list = historyHelper.getHistoryData();
+        handleGetStartedInfo(list.size());
+
         for(HistoryPojo pojo : list) {
             historyAdapter.addHistory(pojo);
         }
@@ -69,11 +71,14 @@ public class HistoryFragment extends Fragment {
 
                 if(Activity.RESULT_OK == resultCode) {
 
-                    HistoryPojo historyPojo = new HistoryPojo();
-                    historyPojo.rawScanType = data.getStringExtra("rawScanType");
-                    historyPojo.rawScanData = data.getStringExtra("rawScanData");
+                    HistoryPojo historyPojo = ImmutableHistoryPojo.builder()
+                            .rawScanData(data.getStringExtra("rawScanData"))
+                            .rawScanType(data.getStringExtra("rawScanType"))
+                            .build();
+
                     historyHelper.addHistoryData(historyPojo);
                     historyAdapter.addHistory(historyPojo);
+                    handleGetStartedInfo(1);
                 }
                 break;
 
@@ -98,12 +103,11 @@ public class HistoryFragment extends Fragment {
                 new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.clear_history)
                     .setMessage(R.string.clear_history_msg)
-                    .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            HistoryHelper.getInstance(getActivity().getApplicationContext()).clearAllHistory();
-                            historyAdapter.notifyDataSetChanged();
-                        }
+                    .setPositiveButton(R.string.action_continue, (dialogInterface, i) -> {
+                        HistoryHelper.getInstance(getActivity().getApplicationContext()).clearAllHistory();
+                        historyAdapter.clearList();
+                        historyAdapter.notifyDataSetChanged();
+                        handleGetStartedInfo(0);
                     })
                     .setNegativeButton(R.string.action_cancel, null)
                     .create()
@@ -114,12 +118,13 @@ public class HistoryFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private View.OnClickListener fabClickListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), ScanActivity.class);
-            startActivityForResult(intent, SCAN_REQ_CODE);
-        }
+    private View.OnClickListener fabClickListener = view -> {
+        Intent intent = new Intent(getActivity(), ScanActivity.class);
+        startActivityForResult(intent, SCAN_REQ_CODE);
     };
+
+    private void handleGetStartedInfo(int dataCount) {
+
+        binding.tvNoScanHistory.setVisibility(0 == dataCount ? View.VISIBLE : View.GONE);
+    }
 }

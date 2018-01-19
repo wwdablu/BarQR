@@ -8,4 +8,6 @@
     <string name="action_cancel">Cancel</string>
     <string name="clear_history">Clear History</string>
     <string name="clear_history_msg">Do you want to clear off all records from the history?</string>
+    <string name="lets_begin">Tap on the camera image at the bottom right to get started.</string>
+    <string name="scan_type">Scan Type</string>
 </resources>

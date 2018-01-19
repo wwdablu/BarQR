@@ -38,10 +38,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return null == historyPojos ? 0 : historyPojos.size();
     }
 
-    public void addHistory(HistoryPojo pojo) {
+    void addHistory(HistoryPojo pojo) {
 
         historyPojos.add(pojo);
         notifyItemInserted(historyPojos.size() - 1);
+    }
+
+    void clearList() {
+        historyPojos.clear();
+        notifyDataSetChanged();
     }
 
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
@@ -57,14 +62,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
             HistoryPojo historyPojo = historyPojos.get(position);
 
-            //Show the type of data
-            binder.tvScanType.setText(HistoryDataHandler.getScanTypeFriendlyName(historyPojo.rawScanData));
+            //Show the type of data (it is inferred from the data)
+            binder.tvScanType.setText(HistoryDataHandler.getScanTypeFriendlyName(historyPojo.rawScanData()));
 
             //Show the action that can be performed on the data
-            binder.tvScanData.setText(HistoryDataHandler.getScanDataInFriendlyFormat(historyPojo.rawScanData));
+            binder.tvScanData.setText(HistoryDataHandler.getScanDataInFriendlyFormat(historyPojo.rawScanData()));
 
             //Show the data source accordingly
-            if(historyPojo.rawScanType.toLowerCase().contains("QR_".toLowerCase())) {
+            if(historyPojo.rawScanType().toLowerCase().contains("QR_".toLowerCase())) {
                 binder.ivScanType.setImageResource(R.drawable.qrcode_scan);
             }
 
@@ -77,7 +82,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             public void onClick(View view) {
 
                 HistoryDataHandler.performActionOn(binder.getRoot().getContext(),
-                        historyPojos.get(getAdapterPosition()).rawScanData);
+                        historyPojos.get(getAdapterPosition()).rawScanData());
             }
         };
     }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.soumya.wwdablu.barqr.historyfragment.HistoryPojo;
+import com.soumya.wwdablu.barqr.historyfragment.ImmutableHistoryPojo;
 
 import java.util.LinkedList;
 
@@ -33,8 +34,8 @@ public class HistoryHelper {
         SQLiteDatabase sqLiteDatabase = database.getWritableDatabase();
 
         ContentValues insertValues = new ContentValues();
-        insertValues.put(BarQrContract.History.TYPE, historyPojo.rawScanType);
-        insertValues.put(BarQrContract.History.DATA, historyPojo.rawScanData);
+        insertValues.put(BarQrContract.History.TYPE, historyPojo.rawScanType());
+        insertValues.put(BarQrContract.History.DATA, historyPojo.rawScanData());
         sqLiteDatabase.insert(BarQrContract.History.TABLE, null, insertValues);
         sqLiteDatabase.close();
     }
@@ -51,9 +52,10 @@ public class HistoryHelper {
 
             do {
 
-                HistoryPojo historyPojo = new HistoryPojo();
-                historyPojo.rawScanType = cursor.getString(cursor.getColumnIndex(BarQrContract.History.TYPE));
-                historyPojo.rawScanData = cursor.getString(cursor.getColumnIndex(BarQrContract.History.DATA));
+                HistoryPojo historyPojo = ImmutableHistoryPojo.builder()
+                        .rawScanType(cursor.getString(cursor.getColumnIndex(BarQrContract.History.TYPE)))
+                        .rawScanData(cursor.getString(cursor.getColumnIndex(BarQrContract.History.DATA)))
+                        .build();
 
                 historyList.add(historyPojo);
 
