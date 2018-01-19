@@ -1,9 +1,10 @@
-[![Build Status](https://travis-ci.org/wwdablu/BarQR.svg?branch=master)](https://travis-ci.org/wwdablu/BarQR)
-
 # BarQR
 Application to scan and fetch barcode and QR code data using zxing library.
 
-The application uses Zxing library to scan both bar codes and QR codes. The application can then parse the information and display it to the user. Based on the type of the data, the required action can be performed.
+The application uses Zxing library to scan both bar codes and QR codes. The application can then parse the information and display it to the user. Based on the type of the data, the required action can be performed.  
+
+This application is available in Google Play Store.  
+https://play.google.com/store/apps/details?id=com.soumya.wwdablu.barqr&hl=en
 
 * Note, VCard support is not present.
 
