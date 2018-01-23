@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.soumya.wwdablu.barqr.database.HistoryHelper;
 import com.soumya.wwdablu.barqr.historyfragment.HistoryFragment;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -15,8 +14,6 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-
-        HistoryHelper.getInstance(getApplicationContext());
 
         HistoryFragment historyFragment = (HistoryFragment) getSupportFragmentManager()
                 .findFragmentByTag(KEY_HISTORY_FRAGMENT);

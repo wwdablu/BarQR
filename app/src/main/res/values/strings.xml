@@ -10,4 +10,11 @@
     <string name="clear_history_msg">Do you want to clear off all records from the history?</string>
     <string name="lets_begin">Tap on the camera image at the bottom right to get started.</string>
     <string name="scan_type">Scan Type</string>
+    <string name="unknown">Unknown</string>
+    <string name="website">Website</string>
+    <string name="vcard">Contact Information</string>
+    <string name="email">E-Mail</string>
+    <string name="message">Message</string>
+    <string name="phone">Phone</string>
+    <string name="plain_text">Plain Text</string>
 </resources>

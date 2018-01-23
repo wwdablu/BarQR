@@ -1,4 +1,4 @@
-package com.soumya.wwdablu.barqr.historyfragment;
+package com.soumya.wwdablu.barqr.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import com.soumya.wwdablu.barqr.R;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-class HistoryDataHandler {
+public class DataHandler {
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({

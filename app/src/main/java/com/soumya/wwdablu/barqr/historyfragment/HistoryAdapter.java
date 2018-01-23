@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 
 import com.soumya.wwdablu.barqr.R;
 import com.soumya.wwdablu.barqr.databinding.RowScanResultBinding;
+import com.soumya.wwdablu.barqr.model.ScanDataInfo;
+import com.soumya.wwdablu.barqr.util.DataHandler;
 
 import java.util.LinkedList;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
-    private LinkedList<HistoryPojo> historyPojos;
+    private LinkedList<ScanDataInfo> historyPojos;
 
     public HistoryAdapter() {
         historyPojos = new LinkedList<>();
@@ -38,9 +40,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return null == historyPojos ? 0 : historyPojos.size();
     }
 
-    void addHistory(HistoryPojo pojo) {
+    void addHistory(ScanDataInfo scanDataInfo) {
 
-        historyPojos.add(pojo);
+        historyPojos.add(scanDataInfo);
         notifyItemInserted(historyPojos.size() - 1);
     }
 
@@ -60,16 +62,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         public void bind(int position) {
 
-            HistoryPojo historyPojo = historyPojos.get(position);
+            ScanDataInfo scanDataInfo = historyPojos.get(position);
 
             //Show the type of data (it is inferred from the data)
-            binder.tvScanType.setText(HistoryDataHandler.getScanTypeFriendlyName(historyPojo.rawScanData()));
+            binder.tvScanType.setText(scanDataInfo.scanDataTypeFriendlyName());
 
             //Show the action that can be performed on the data
-            binder.tvScanData.setText(HistoryDataHandler.getScanDataInFriendlyFormat(historyPojo.rawScanData()));
+            binder.tvScanData.setText(DataHandler.getScanDataInFriendlyFormat(scanDataInfo.scanData()));
 
             //Show the data source accordingly
-            if(historyPojo.rawScanType().toLowerCase().contains("QR_".toLowerCase())) {
+            if(scanDataInfo.scanDataType().toLowerCase().contains("QR_".toLowerCase())) {
                 binder.ivScanType.setImageResource(R.drawable.qrcode_scan);
             }
 
@@ -81,8 +83,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             @Override
             public void onClick(View view) {
 
-                HistoryDataHandler.performActionOn(binder.getRoot().getContext(),
-                        historyPojos.get(getAdapterPosition()).rawScanData());
+                DataHandler.performActionOn(binder.getRoot().getContext(),
+                        historyPojos.get(getAdapterPosition()).scanData());
             }
         };
     }

@@ -17,24 +17,31 @@ import android.view.ViewGroup;
 
 import com.soumya.wwdablu.barqr.R;
 import com.soumya.wwdablu.barqr.ScanActivity;
-import com.soumya.wwdablu.barqr.database.HistoryHelper;
+import com.soumya.wwdablu.barqr.database.DataManager;
 import com.soumya.wwdablu.barqr.databinding.FragmentHistoryBinding;
+import com.soumya.wwdablu.barqr.model.ImmutableScanDataInfo;
+import com.soumya.wwdablu.barqr.model.ScanDataInfo;
+import com.soumya.wwdablu.barqr.util.DataHandler;
 
 import java.util.LinkedList;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class HistoryFragment extends Fragment {
 
     private static final int SCAN_REQ_CODE = 1001;
 
     private HistoryAdapter historyAdapter;
-    private HistoryHelper historyHelper;
     private FragmentHistoryBinding binding;
+
+    private DisposableObserver<LinkedList<ScanDataInfo>> disposableObserver;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        historyHelper = HistoryHelper.getInstance(getActivity().getApplicationContext());
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_history,
                 container, false);
@@ -54,12 +61,34 @@ public class HistoryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        LinkedList<HistoryPojo> list = historyHelper.getHistoryData();
-        handleGetStartedInfo(list.size());
 
-        for(HistoryPojo pojo : list) {
-            historyAdapter.addHistory(pojo);
-        }
+        disposableObserver = DataManager.getInstance().getAllScanHistory()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(new DisposableObserver<LinkedList<ScanDataInfo>>() {
+                @Override
+                public void onNext(LinkedList<ScanDataInfo> scanDataInfoList) {
+
+                    handleGetStartedInfo(scanDataInfoList.size());
+
+                    for(ScanDataInfo scanDataInfo : scanDataInfoList) {
+                        historyAdapter.addHistory(scanDataInfo);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Timber.e(e, "Message is: %s", e.getMessage());
+                }
+
+                @Override
+                public void onComplete() {
+
+                    if(null != disposableObserver && !disposableObserver.isDisposed()) {
+                        disposableObserver.dispose();
+                    }
+                }
+            });
     }
 
     @Override
@@ -71,13 +100,15 @@ public class HistoryFragment extends Fragment {
 
                 if(Activity.RESULT_OK == resultCode) {
 
-                    HistoryPojo historyPojo = ImmutableHistoryPojo.builder()
-                            .rawScanData(data.getStringExtra("rawScanData"))
-                            .rawScanType(data.getStringExtra("rawScanType"))
+                    ScanDataInfo scanDataInfo = ImmutableScanDataInfo.builder()
+                            .scanData(data.getStringExtra(ScanActivity.KEY_SCAN_DATA))
+                            .scanType(data.getStringExtra(ScanActivity.KEY_SCAN_TYPE))
+                            .scanDataType(DataHandler.getScanTypeFrom(data.getStringExtra(ScanActivity.KEY_SCAN_DATA)))
+                            .scanDataTypeFriendlyName(DataHandler.getScanTypeFriendlyName(data.getStringExtra(ScanActivity.KEY_SCAN_DATA)))
                             .build();
 
-                    historyHelper.addHistoryData(historyPojo);
-                    historyAdapter.addHistory(historyPojo);
+                    historyAdapter.addHistory(scanDataInfo);
+                    DataManager.getInstance().saveScanData(scanDataInfo);
                     handleGetStartedInfo(1);
                 }
                 break;
@@ -104,7 +135,6 @@ public class HistoryFragment extends Fragment {
                     .setTitle(R.string.clear_history)
                     .setMessage(R.string.clear_history_msg)
                     .setPositiveButton(R.string.action_continue, (dialogInterface, i) -> {
-                        HistoryHelper.getInstance(getActivity().getApplicationContext()).clearAllHistory();
                         historyAdapter.clearList();
                         historyAdapter.notifyDataSetChanged();
                         handleGetStartedInfo(0);

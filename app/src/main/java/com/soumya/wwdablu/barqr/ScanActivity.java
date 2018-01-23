@@ -9,6 +9,9 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class ScanActivity extends AppCompatActivity {
 
+    public static final String KEY_SCAN_TYPE = "rawScanType";
+    public static final String KEY_SCAN_DATA = "rawScanData";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +35,14 @@ public class ScanActivity extends AppCompatActivity {
         if(result != null) {
             if(result.getContents() == null) {
 
-                resultIntent.putExtra("rawScanType", "");
-                resultIntent.putExtra("rawScanData", "");
+                resultIntent.putExtra(KEY_SCAN_TYPE, "");
+                resultIntent.putExtra(KEY_SCAN_DATA, "");
                 resultCode = RESULT_CANCELED;
 
             } else {
 
-                resultIntent.putExtra("rawScanType", result.getFormatName());
-                resultIntent.putExtra("rawScanData", result.getContents());
+                resultIntent.putExtra(KEY_SCAN_TYPE, result.getFormatName());
+                resultIntent.putExtra(KEY_SCAN_DATA, result.getContents());
                 resultCode = RESULT_OK;
             }
         } else {
