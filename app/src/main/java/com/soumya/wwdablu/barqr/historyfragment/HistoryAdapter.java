@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.soumya.wwdablu.barqr.R;
 import com.soumya.wwdablu.barqr.databinding.RowScanResultBinding;
-import com.soumya.wwdablu.barqr.model.ScanDataInfo;
-import com.soumya.wwdablu.barqr.util.DataHandler;
+import com.soumya.wwdablu.barqr.parser.ScanData;
+import com.soumya.wwdablu.barqr.parser.ScanDataInfo;
 
 import java.util.LinkedList;
 
@@ -68,7 +68,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             binder.tvScanType.setText(scanDataInfo.scanDataTypeFriendlyName());
 
             //Show the action that can be performed on the data
-            binder.tvScanData.setText(DataHandler.getScanDataInFriendlyFormat(scanDataInfo.scanData()));
+            binder.tvScanData.setText(ScanData.getActionInFriendlyText(
+                    binder.getRoot().getContext(), scanDataInfo.scanData()));
 
             //Show the data source accordingly
             if(scanDataInfo.scanDataType().toLowerCase().contains("QR_".toLowerCase())) {
@@ -83,7 +84,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             @Override
             public void onClick(View view) {
 
-                DataHandler.performActionOn(binder.getRoot().getContext(),
+                ScanData.performActionOn(binder.getRoot().getContext(),
                         historyPojos.get(getAdapterPosition()).scanData());
             }
         };

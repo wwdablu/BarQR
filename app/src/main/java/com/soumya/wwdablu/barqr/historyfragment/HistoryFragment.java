@@ -19,9 +19,9 @@ import com.soumya.wwdablu.barqr.R;
 import com.soumya.wwdablu.barqr.ScanActivity;
 import com.soumya.wwdablu.barqr.database.DataManager;
 import com.soumya.wwdablu.barqr.databinding.FragmentHistoryBinding;
-import com.soumya.wwdablu.barqr.model.ImmutableScanDataInfo;
-import com.soumya.wwdablu.barqr.model.ScanDataInfo;
-import com.soumya.wwdablu.barqr.util.DataHandler;
+import com.soumya.wwdablu.barqr.parser.ImmutableScanDataInfo;
+import com.soumya.wwdablu.barqr.parser.ScanData;
+import com.soumya.wwdablu.barqr.parser.ScanDataInfo;
 
 import java.util.LinkedList;
 
@@ -62,7 +62,7 @@ public class HistoryFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 
-        disposableObserver = DataManager.getInstance().getAllScanHistory()
+        disposableObserver = DataManager.getInstance().getAllScanHistory(getActivity())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeWith(new DisposableObserver<LinkedList<ScanDataInfo>>() {
@@ -100,14 +100,13 @@ public class HistoryFragment extends Fragment {
 
                 if(Activity.RESULT_OK == resultCode) {
 
-                    ScanDataInfo scanDataInfo = ImmutableScanDataInfo.builder()
-                            .scanData(data.getStringExtra(ScanActivity.KEY_SCAN_DATA))
-                            .scanType(data.getStringExtra(ScanActivity.KEY_SCAN_TYPE))
-                            .scanDataType(DataHandler.getScanTypeFrom(data.getStringExtra(ScanActivity.KEY_SCAN_DATA)))
-                            .scanDataTypeFriendlyName(DataHandler.getScanTypeFriendlyName(data.getStringExtra(ScanActivity.KEY_SCAN_DATA)))
-                            .build();
+                    ScanDataInfo scanDataInfo = ScanData.resolveDataContent(getActivity(),
+                            data.getStringExtra(ScanActivity.KEY_SCAN_TYPE).contains("QR_") ?
+                                ScanData.SCAN_TYPE_QR : ScanData.SCAN_TYPE_BAR,
+                            data.getStringExtra(ScanActivity.KEY_SCAN_DATA));
 
-                    historyAdapter.addHistory(scanDataInfo);
+                            historyAdapter.addHistory(scanDataInfo);
+
                     DataManager.getInstance().saveScanData(scanDataInfo);
                     handleGetStartedInfo(1);
                 }

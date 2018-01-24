@@ -1,11 +1,12 @@
 package com.soumya.wwdablu.barqr.database;
 
-import com.soumya.wwdablu.barqr.model.ImmutableScanDataInfo;
-import com.soumya.wwdablu.barqr.model.ScanDataInfo;
-import com.soumya.wwdablu.barqr.util.DataHandler;
+import android.content.Context;
+
+import com.soumya.wwdablu.barqr.parser.ImmutableScanDataInfo;
+import com.soumya.wwdablu.barqr.parser.ScanData;
+import com.soumya.wwdablu.barqr.parser.ScanDataInfo;
 import com.soumya.wwdablu.barqr.util.Utils;
 
-import java.util.Date;
 import java.util.LinkedList;
 
 import io.reactivex.Observable;
@@ -27,7 +28,7 @@ public class DataManager {
 
     /**
      * Returns the instance of the DataManager to access the scan history information
-     * @return
+     * @return DataManager
      */
     public static synchronized DataManager getInstance() {
 
@@ -38,7 +39,7 @@ public class DataManager {
         return mInstance;
     }
 
-    public Observable<LinkedList<ScanDataInfo>> getAllScanHistory() {
+    public Observable<LinkedList<ScanDataInfo>> getAllScanHistory(final Context context) {
 
         return Observable.create(emitter -> {
 
@@ -53,11 +54,12 @@ public class DataManager {
                     for(ScanInformation scanInfo : results) {
 
                         scanInformationList.add(
-                                ImmutableScanDataInfo.builder()
-                                        .scanData(scanInfo.scanData)
-                                        .scanDataType("")
-                                        .scanType(scanInfo.scanType)
-                                        .scanDataTypeFriendlyName(DataHandler.getScanTypeFriendlyName(scanInfo.scanData))
+                            ImmutableScanDataInfo.builder()
+                                .scanData(scanInfo.scanData)
+                                .scanDataType(ScanData.getScanTypeFrom(scanInfo.scanDate))
+                                .scanDataTypeFriendlyName(ScanData.getScanTypeFriendlyName(
+                                        context, scanInfo.scanData))
+                                .scanType(scanInfo.scanType)
                                 .build()
                         );
                     }

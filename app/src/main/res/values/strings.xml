@@ -17,4 +17,13 @@
     <string name="message">Message</string>
     <string name="phone">Phone</string>
     <string name="plain_text">Plain Text</string>
+    <string name="location">Location</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="click_to_launch">Click to launch,</string>
+    <string name="click_to_send_email">Click to send email at,</string>
+    <string name="click_to_send_sms">Click to send a SMS to,</string>
+    <string name="click_to_place_call">Click to place a call at,</string>
+    <string name="click_to_import_cards">Click to import contact from VCard into contacts.</string>
+    <string name="click_to_launch_maps">Click to launch maps to view the location.</string>
+    <string name="click_to_view_info">Click to view information</string>
 </resources>
