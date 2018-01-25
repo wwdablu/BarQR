@@ -15,10 +15,10 @@ import java.util.LinkedList;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
-    private LinkedList<ScanDataInfo> historyPojos;
+    private LinkedList<ScanDataInfo> scanDataInfoList;
 
     public HistoryAdapter() {
-        historyPojos = new LinkedList<>();
+        scanDataInfoList = new LinkedList<>();
     }
 
     @Override
@@ -37,17 +37,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     @Override
     public int getItemCount() {
-        return null == historyPojos ? 0 : historyPojos.size();
+        return null == scanDataInfoList ? 0 : scanDataInfoList.size();
     }
 
     void addHistory(ScanDataInfo scanDataInfo) {
 
-        historyPojos.add(scanDataInfo);
-        notifyItemInserted(historyPojos.size() - 1);
+        scanDataInfoList.add(scanDataInfo);
+        notifyItemInserted(scanDataInfoList.size() - 1);
     }
 
     void clearList() {
-        historyPojos.clear();
+        scanDataInfoList.clear();
         notifyDataSetChanged();
     }
 
@@ -62,7 +62,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         public void bind(int position) {
 
-            ScanDataInfo scanDataInfo = historyPojos.get(position);
+            ScanDataInfo scanDataInfo = scanDataInfoList.get(position);
 
             //Show the type of data (it is inferred from the data)
             binder.tvScanType.setText(scanDataInfo.scanDataTypeFriendlyName());
@@ -72,7 +72,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     binder.getRoot().getContext(), scanDataInfo.scanData()));
 
             //Show the data source accordingly
-            if(scanDataInfo.scanDataType().toLowerCase().contains("QR_".toLowerCase())) {
+            if(scanDataInfo.scanType().toLowerCase().contains(ScanData.SCAN_TYPE_QR)) {
                 binder.ivScanType.setImageResource(R.drawable.qrcode_scan);
             }
 
@@ -85,7 +85,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             public void onClick(View view) {
 
                 ScanData.performActionOn(binder.getRoot().getContext(),
-                        historyPojos.get(getAdapterPosition()).scanData());
+                        scanDataInfoList.get(getAdapterPosition()).scanData());
             }
         };
     }

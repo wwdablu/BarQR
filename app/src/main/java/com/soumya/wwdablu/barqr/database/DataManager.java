@@ -110,4 +110,40 @@ public class DataManager {
             }
         });
     }
+
+    public void clearAllHistory() {
+
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+
+            try(Realm realm = Realm.getDefaultInstance()) {
+
+                realm.executeTransaction(realmParam -> {
+
+                    realm.deleteAll();
+                    emitter.onNext(true);
+                    emitter.onComplete();
+                });
+            }
+        })
+
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+
+        .subscribeWith(new DisposableObserver<Boolean>() {
+            @Override
+            public void onNext(Boolean aBoolean) {
+                //
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e, "Could not remove history data because, %s", e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                Timber.d("All data has been removed.");
+            }
+        });
+    }
 }

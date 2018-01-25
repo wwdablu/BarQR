@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">BarQR</string>
+    <string name="choose_email_app">ই-মেইল পাঠানোর জন্য অ্যাপ্লিকেশন নির্বাচন করুন</string>
+    <string name="choose_sms_app">SMS পাঠাতে অ্যাপ্লিকেশন নির্বাচন করুন</string>
+    <string name="choose_phone_app">কল করতে অ্যাপ্লিকেশন নির্বাচন করুন</string>
+    <string name="clear_all">সব মুছে ফেলুন</string>
+    <string name="action_continue">হ্যাঁ</string>
+    <string name="action_cancel">না</string>
+    <string name="clear_history">সব মুছে ফেলুন</string>
+    <string name="clear_history_msg">আপনি কি সব রেকর্ড মুছে ফেলতে চান?</string>
+    <string name="lets_begin">শুরু করার জন্য নীচে ডানদিকের ক্যামেরা আইকনে ক্লিক করুন</string>
+    <string name="scan_type">স্ক্যান টাইপ</string>
+    <string name="unknown">অজানা</string>
+    <string name="website">ওয়েবসাইট</string>
+    <string name="vcard">যোগাযোগের তথ্য</string>
+    <string name="email">ই-মেইল</string>
+    <string name="message">মেসেজিং</string>
+    <string name="phone">টেলিফোন</string>
+    <string name="plain_text">সাধারণ টেক্সট</string>
+    <string name="location">অবস্থান</string>
+    <string name="wifi">ওয়াইফাই</string>
+    <string name="click_to_launch">আরম্ভ করার জন্য ক্লিক করুন,</string>
+    <string name="click_to_send_email">ইমেইল পাঠাতে ক্লিক করুন,</string>
+    <string name="click_to_send_sms">একটি বার্তা পাঠাতে ক্লিক করুন,</string>
+    <string name="click_to_place_call">একটি কল স্থাপন করতে ক্লিক করুন,</string>
+    <string name="click_to_import_cards">VCard থেকে যোগাযোগ যোগ করুন.</string>
+    <string name="click_to_launch_maps">অবস্থান দেখার জন্য মানচিত্র আরম্ভ করতে ক্লিক করুন</string>
+    <string name="click_to_view_info">তথ্য দেখতে ক্লিক করুন</string>
+</resources>

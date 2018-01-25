@@ -19,7 +19,6 @@ import com.soumya.wwdablu.barqr.R;
 import com.soumya.wwdablu.barqr.ScanActivity;
 import com.soumya.wwdablu.barqr.database.DataManager;
 import com.soumya.wwdablu.barqr.databinding.FragmentHistoryBinding;
-import com.soumya.wwdablu.barqr.parser.ImmutableScanDataInfo;
 import com.soumya.wwdablu.barqr.parser.ScanData;
 import com.soumya.wwdablu.barqr.parser.ScanDataInfo;
 
@@ -135,7 +134,7 @@ public class HistoryFragment extends Fragment {
                     .setMessage(R.string.clear_history_msg)
                     .setPositiveButton(R.string.action_continue, (dialogInterface, i) -> {
                         historyAdapter.clearList();
-                        historyAdapter.notifyDataSetChanged();
+                        DataManager.getInstance().clearAllHistory();
                         handleGetStartedInfo(0);
                     })
                     .setNegativeButton(R.string.action_cancel, null)

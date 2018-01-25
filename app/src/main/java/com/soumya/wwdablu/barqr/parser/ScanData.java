@@ -2,6 +2,7 @@ package com.soumya.wwdablu.barqr.parser;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
@@ -121,7 +122,7 @@ public class ScanData {
 
             //Check if the rawScanData is WiFi
         } else if (rawScanData.length() >= 5 &&
-                rawScanData.substring(0, 4).toUpperCase().contentEquals(WIFI_IDENTIFIER)) {
+                rawScanData.substring(0, 5).toUpperCase().contentEquals(WIFI_IDENTIFIER)) {
             return TYPE_WIFI;
 
         }
@@ -154,7 +155,7 @@ public class ScanData {
                 break;
 
             case TYPE_PHONE:
-                friendlyName = context.getString(R.string.phone);;
+                friendlyName = context.getString(R.string.phone);
                 break;
 
             case TYPE_VCARD:
@@ -260,6 +261,20 @@ public class ScanData {
                 phoneIntent.setData(Uri.parse(rawScanData));
                 context.startActivity(Intent.createChooser(phoneIntent, context.getString(R.string.choose_phone_app)));
                 break;
+
+            case TYPE_GEOLOCATION:
+
+                Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(rawScanData));
+                if(null != mapsIntent.resolveActivity(context.getPackageManager())) {
+                    context.startActivity(mapsIntent);
+                }
+                break;
+
+            case TYPE_VCARD:
+                break;
+
+            case TYPE_WIFI:
+                break;
         }
     }
 
@@ -306,5 +321,10 @@ public class ScanData {
         }
 
         return "";
+    }
+
+    private static void showWiFiDetails(Context context, String rawScanData) {
+
+        String data = rawScanData.substring(WIFI_IDENTIFIER.length());
     }
 }
