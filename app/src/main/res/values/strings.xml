@@ -26,4 +26,5 @@
     <string name="click_to_import_cards">Click to import contact from VCard into contacts.</string>
     <string name="click_to_launch_maps">Click to launch maps to view the location.</string>
     <string name="click_to_view_info">Click to view information</string>
+    <string name="cd_place_call">Click to place call</string>
 </resources>

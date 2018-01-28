@@ -5,9 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.soumya.wwdablu.barqr.R;
-import com.soumya.wwdablu.barqr.databinding.RowScanResultBinding;
+import com.soumya.wwdablu.barqr.databinding.CardGenericDetailsBinding;
 import com.soumya.wwdablu.barqr.parser.ScanData;
 import com.soumya.wwdablu.barqr.parser.ScanDataInfo;
 
@@ -24,8 +25,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        RowScanResultBinding binder = DataBindingUtil.inflate(
-                LayoutInflater.from(parent.getContext()), R.layout.row_scan_result, parent, false);
+        CardGenericDetailsBinding binder = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.getContext()), R.layout.card_generic_details, parent, false);
 
         return new HistoryViewHolder(binder);
     }
@@ -42,8 +43,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     void addHistory(ScanDataInfo scanDataInfo) {
 
-        scanDataInfoList.add(scanDataInfo);
-        notifyItemInserted(scanDataInfoList.size() - 1);
+        scanDataInfoList.add(0, scanDataInfo);
+        notifyDataSetChanged();
     }
 
     void clearList() {
@@ -53,9 +54,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
-        private RowScanResultBinding binder;
+        private CardGenericDetailsBinding binder;
 
-        public HistoryViewHolder(RowScanResultBinding binder) {
+        public HistoryViewHolder(CardGenericDetailsBinding binder) {
             super(binder.getRoot());
             this.binder = binder;
         }
@@ -64,16 +65,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
             ScanDataInfo scanDataInfo = scanDataInfoList.get(position);
 
-            //Show the type of data (it is inferred from the data)
-            binder.tvScanType.setText(scanDataInfo.scanDataTypeFriendlyName());
-
             //Show the action that can be performed on the data
-            binder.tvScanData.setText(ScanData.getActionInFriendlyText(
+            binder.tvGenericDetails.setText(ScanData.getActionInFriendlyText(
                     binder.getRoot().getContext(), scanDataInfo.scanData()));
 
-            //Show the data source accordingly
+            assignScanDataTypeIcon(scanDataInfo, binder.ivGenericIcon);
+
+            //Mark the header accordingly to the scan type
             if(scanDataInfo.scanType().toLowerCase().contains(ScanData.SCAN_TYPE_QR)) {
-                binder.ivScanType.setImageResource(R.drawable.qrcode_scan);
+                binder.vwScanType.setBackgroundColor(binder.getRoot().getContext().getResources().getColor(R.color.qrScanType));
+            } else {
+                binder.vwScanType.setBackgroundColor(binder.getRoot().getContext().getResources().getColor(R.color.barScanType));
             }
 
             this.binder.getRoot().setOnClickListener(clickListener);
@@ -88,5 +90,48 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         scanDataInfoList.get(getAdapterPosition()).scanData());
             }
         };
+    }
+
+    private void assignScanDataTypeIcon(ScanDataInfo scanDataInfo, ImageView imageView) {
+
+        switch (scanDataInfo.scanDataType()) {
+            case ScanData.TYPE_EMAIL:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_email));
+                break;
+
+            case ScanData.TYPE_GEOLOCATION:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_location));
+                break;
+
+            case ScanData.TYPE_PHONE:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_phone));
+                break;
+
+            case ScanData.TYPE_PLAIN_TEXT:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_plain_text));
+                break;
+
+            case ScanData.TYPE_SMS:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_sms));
+                break;
+
+            case ScanData.TYPE_VCARD:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_vcard));
+                break;
+
+            case ScanData.TYPE_WEB_URL:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_website));
+                break;
+
+            case ScanData.TYPE_WIFI:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_wifi));
+                break;
+
+            case ScanData.TYPE_UNKNOWN:
+            default:
+                imageView.setBackground(imageView.getContext().getResources().getDrawable(R.drawable.ic_unknown));
+                break;
+
+        }
     }
 }

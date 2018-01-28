@@ -1,8 +1,8 @@
 package com.soumya.wwdablu.barqr.parser;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
@@ -39,15 +39,15 @@ public class ScanData {
     })
     @interface Type {}
 
-    private static final String TYPE_WEB_URL = "type.web.url";
-    private static final String TYPE_PLAIN_TEXT = "type.plain.text";
-    private static final String TYPE_VCARD = "type.vcard";
-    private static final String TYPE_EMAIL = "type.email";
-    private static final String TYPE_SMS = "type.sms";
-    private static final String TYPE_PHONE = "type.phone";
-    private static final String TYPE_GEOLOCATION = "type.geo";
-    private static final String TYPE_WIFI = "type.wifi";
-    private static final String TYPE_UNKNOWN = "type.unknown";
+    public static final String TYPE_WEB_URL = "type.web.url";
+    public static final String TYPE_PLAIN_TEXT = "type.plain.text";
+    public static final String TYPE_VCARD = "type.vcard";
+    public static final String TYPE_EMAIL = "type.email";
+    public static final String TYPE_SMS = "type.sms";
+    public static final String TYPE_PHONE = "type.phone";
+    public static final String TYPE_GEOLOCATION = "type.geo";
+    public static final String TYPE_WIFI = "type.wifi";
+    public static final String TYPE_UNKNOWN = "type.unknown";
 
     //Data Identifiers
     private static final String VCARD_BEGIN = "BEGIN:VCARD";
@@ -98,7 +98,7 @@ public class ScanData {
         }
 
         //Check if the rawScanData is Email
-        else if (rawScanData.length() >= 6 &&
+        else if (rawScanData.length() >= 7 &&
                 rawScanData.substring(0, 7).toUpperCase().contentEquals(MAIL_IDENTIFIER)) {
             return TYPE_EMAIL;
         }
@@ -239,27 +239,53 @@ public class ScanData {
 
             case TYPE_EMAIL:
 
-                Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                emailIntent.setType("plain/text");
-                parseEmailDataFrom(emailIntent, rawScanData);
-                context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.choose_email_app)));
+                new AlertDialog.Builder(context)
+                        .setTitle("Send EMail")
+                        .setMessage(String.format("Would you like to send Email to %1s", getEMailRecipientAddress(rawScanData)))
+                        .setCancelable(false)
+                        .setPositiveButton("Send", (dialogInterface, i) -> {
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                            emailIntent.setType("plain/text");
+                            parseEmailDataFrom(emailIntent, rawScanData);
+                            context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.choose_email_app)));
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
                 break;
 
             case TYPE_SMS:
 
-                String[] smsData = rawScanData.split(":");
+                final String[] smsData = rawScanData.split(":");
 
-                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                smsIntent.setData(Uri.parse("sms:" + Uri.encode(smsData[1])));
-                smsIntent.putExtra("sms_body", smsData[2]);
-                context.startActivity(Intent.createChooser(smsIntent, context.getString(R.string.choose_sms_app)));
+                new AlertDialog.Builder(context)
+                        .setTitle("Send Message")
+                        .setMessage(String.format("Would you like to send SMS to %1s", smsData[1]))
+                        .setCancelable(false)
+                        .setPositiveButton("Send", (dialogInterface, i) -> {
+                            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                            smsIntent.setData(Uri.parse("sms:" + Uri.encode(smsData[1])));
+                            smsIntent.putExtra("sms_body", smsData[2]);
+                            context.startActivity(Intent.createChooser(smsIntent, context.getString(R.string.choose_sms_app)));
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
                 break;
 
             case TYPE_PHONE:
 
-                Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-                phoneIntent.setData(Uri.parse(rawScanData));
-                context.startActivity(Intent.createChooser(phoneIntent, context.getString(R.string.choose_phone_app)));
+                String phoneData = rawScanData.substring(PHONE_IDENTIFIER.length(), rawScanData.length());
+
+                new AlertDialog.Builder(context)
+                    .setTitle("Place Call")
+                    .setMessage(String.format("Would you like to place call to %1s", phoneData))
+                    .setCancelable(false)
+                    .setPositiveButton("Call", (dialogInterface, i) -> {
+                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                        phoneIntent.setData(Uri.parse(rawScanData));
+                        context.startActivity(Intent.createChooser(phoneIntent, context.getString(R.string.choose_phone_app)));
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
                 break;
 
             case TYPE_GEOLOCATION:
@@ -274,6 +300,15 @@ public class ScanData {
                 break;
 
             case TYPE_WIFI:
+
+                String wifiDetails = showWiFiDetails(context, rawScanData);
+
+                new AlertDialog.Builder(context)
+                        .setTitle("SSID Details")
+                        .setMessage(wifiDetails)
+                        .setCancelable(false)
+                        .setPositiveButton("Close", null)
+                        .show();
                 break;
         }
     }
@@ -323,8 +358,33 @@ public class ScanData {
         return "";
     }
 
-    private static void showWiFiDetails(Context context, String rawScanData) {
+    private static String showWiFiDetails(Context context, String rawScanData) {
 
-        String data = rawScanData.substring(WIFI_IDENTIFIER.length());
+        StringBuilder sb = new StringBuilder();
+
+        String data = rawScanData.substring(WIFI_IDENTIFIER.length(), rawScanData.length());
+        String wifiInfo[] = data.split(";");
+
+        for(String s : wifiInfo) {
+
+            String splitData[] = s.split(":");
+
+            switch (splitData[0]) {
+
+                case "T":
+                    sb.append("SSID Type: ").append(splitData[1]).append("\n");
+                    break;
+
+                case "S":
+                    sb.append("SSID Name: ").append(splitData[1]).append("\n");
+                    break;
+
+                case "P":
+                    sb.append("Password: ").append(splitData[1]).append("\n");
+                    break;
+            }
+        }
+
+        return sb.toString();
     }
 }

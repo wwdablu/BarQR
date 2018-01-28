@@ -56,7 +56,7 @@ public class DataManager {
                         scanInformationList.add(
                             ImmutableScanDataInfo.builder()
                                 .scanData(scanInfo.scanData)
-                                .scanDataType(ScanData.getScanTypeFrom(scanInfo.scanDate))
+                                .scanDataType(ScanData.getScanTypeFrom(scanInfo.scanData))
                                 .scanDataTypeFriendlyName(ScanData.getScanTypeFriendlyName(
                                         context, scanInfo.scanData))
                                 .scanType(scanInfo.scanType)
