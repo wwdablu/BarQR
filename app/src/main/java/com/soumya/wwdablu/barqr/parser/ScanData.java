@@ -301,14 +301,14 @@ public class ScanData {
 
             case TYPE_WIFI:
 
-                String wifiDetails = showWiFiDetails(context, rawScanData);
+                String wifiDetails = showWiFiDetails(rawScanData);
 
                 new AlertDialog.Builder(context)
-                        .setTitle("SSID Details")
-                        .setMessage(wifiDetails)
-                        .setCancelable(false)
-                        .setPositiveButton("Close", null)
-                        .show();
+                    .setTitle("SSID Details")
+                    .setMessage(wifiDetails)
+                    .setCancelable(false)
+                    .setPositiveButton("Close", null)
+                    .show();
                 break;
         }
     }
@@ -358,7 +358,7 @@ public class ScanData {
         return "";
     }
 
-    private static String showWiFiDetails(Context context, String rawScanData) {
+    private static String showWiFiDetails(String rawScanData) {
 
         StringBuilder sb = new StringBuilder();
 
