@@ -4,13 +4,20 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.MemoryFile;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
+import android.widget.Toast;
 
 import com.soumya.wwdablu.barqr.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -68,11 +75,11 @@ public class ScanData {
     public static ScanDataInfo resolveDataContent(@NonNull Context context, @Scan String scanFormat, @NonNull String scanPayload) {
 
         return ImmutableScanDataInfo.builder()
-                .scanData(scanPayload)
-                .scanDataType(getScanTypeFrom(scanPayload))
-                .scanDataTypeFriendlyName(getScanTypeFriendlyName(context, scanPayload))
-                .scanType(scanFormat)
-                .build();
+            .scanData(scanPayload)
+            .scanDataType(getScanTypeFrom(scanPayload))
+            .scanDataTypeFriendlyName(getScanTypeFriendlyName(context, scanPayload))
+            .scanType(scanFormat)
+            .build();
     }
 
     /**
@@ -240,17 +247,17 @@ public class ScanData {
             case TYPE_EMAIL:
 
                 new AlertDialog.Builder(context)
-                        .setTitle("Send EMail")
-                        .setMessage(String.format("Would you like to send Email to %1s", getEMailRecipientAddress(rawScanData)))
-                        .setCancelable(false)
-                        .setPositiveButton("Send", (dialogInterface, i) -> {
-                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                            emailIntent.setType("plain/text");
-                            parseEmailDataFrom(emailIntent, rawScanData);
-                            context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.choose_email_app)));
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
+                    .setTitle("Send EMail")
+                    .setMessage(String.format("Would you like to send Email to %1s", getEMailRecipientAddress(rawScanData)))
+                    .setCancelable(false)
+                    .setPositiveButton("Send", (dialogInterface, i) -> {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.setType("plain/text");
+                        parseEmailDataFrom(emailIntent, rawScanData);
+                        context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.choose_email_app)));
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
                 break;
 
             case TYPE_SMS:
@@ -258,17 +265,17 @@ public class ScanData {
                 final String[] smsData = rawScanData.split(":");
 
                 new AlertDialog.Builder(context)
-                        .setTitle("Send Message")
-                        .setMessage(String.format("Would you like to send SMS to %1s", smsData[1]))
-                        .setCancelable(false)
-                        .setPositiveButton("Send", (dialogInterface, i) -> {
-                            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                            smsIntent.setData(Uri.parse("sms:" + Uri.encode(smsData[1])));
-                            smsIntent.putExtra("sms_body", smsData[2]);
-                            context.startActivity(Intent.createChooser(smsIntent, context.getString(R.string.choose_sms_app)));
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
+                    .setTitle("Send Message")
+                    .setMessage(String.format("Would you like to send SMS to %1s", smsData[1]))
+                    .setCancelable(false)
+                    .setPositiveButton("Send", (dialogInterface, i) -> {
+                        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                        smsIntent.setData(Uri.parse("sms:" + Uri.encode(smsData[1])));
+                        smsIntent.putExtra("sms_body", smsData[2]);
+                        context.startActivity(Intent.createChooser(smsIntent, context.getString(R.string.choose_sms_app)));
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
                 break;
 
             case TYPE_PHONE:
@@ -293,10 +300,30 @@ public class ScanData {
                 Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(rawScanData));
                 if(null != mapsIntent.resolveActivity(context.getPackageManager())) {
                     context.startActivity(mapsIntent);
+                } else {
+                    Toast.makeText(context, R.string.maps_app_not_found, Toast.LENGTH_LONG).show();
                 }
                 break;
 
             case TYPE_VCARD:
+                File vcard = null;
+                FileOutputStream vcardFos = null;
+                try {
+                    vcard = new File(Environment.getExternalStorageDirectory().getPath() + File.pathSeparator + "vcard.vcf");
+                    vcardFos = new FileOutputStream(vcard);
+                    OutputStreamWriter vcardWriter = new OutputStreamWriter(vcardFos);
+                    vcardWriter.write(rawScanData);
+                    vcardWriter.flush();
+                    vcardWriter.close();
+                    vcardFos.close();
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(vcard),"text/x-vcard"); //storage path is path of your vcf file and vFile is name of that file.
+                    context.startActivity(intent);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case TYPE_WIFI:
@@ -369,7 +396,7 @@ public class ScanData {
 
             String splitData[] = s.split(":");
 
-            switch (splitData[0]) {
+            switch (splitData[0].toUpperCase()) {
 
                 case "T":
                     sb.append("SSID Type: ").append(splitData[1]).append("\n");

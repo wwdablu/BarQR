@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#4CAF50</color>
     <color name="colorPrimaryDark">#388E3C</color>
-    <color name="colorAccent">#03A9F4</color>
+    <color name="colorAccent">#38883C</color>
 
     <color name="qrScanType">#4C5D6E</color>
     <color name="barScanType">#86420A</color>

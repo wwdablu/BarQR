@@ -26,4 +26,5 @@
     <string name="click_to_import_cards">VCard থেকে যোগাযোগ যোগ করুন.</string>
     <string name="click_to_launch_maps">অবস্থান দেখার জন্য মানচিত্র আরম্ভ করতে ক্লিক করুন</string>
     <string name="click_to_view_info">তথ্য দেখতে ক্লিক করুন</string>
+    <string name="maps_app_not_found">মানচিত্র অ্যাপ্লিকেশন পাওয়া যায়নি</string>
 </resources>

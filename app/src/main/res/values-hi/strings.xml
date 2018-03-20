@@ -26,4 +26,5 @@
     <string name="click_to_import_cards">VCard से संपर्क जानकारी जोड़ें</string>
     <string name="click_to_launch_maps">मानचित्र एप्लिकेशन में स्थान देखने के लिए क्लिक करें</string>
     <string name="click_to_view_info">जानकारी देखने के लिए क्लिक करें</string>
+    <string name="maps_app_not_found">मानचित्र एप्लिकेशन नहीं मिला</string>
 </resources>
