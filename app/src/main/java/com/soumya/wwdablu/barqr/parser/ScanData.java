@@ -4,10 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.MemoryFile;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -309,7 +308,7 @@ public class ScanData {
                 File vcard = null;
                 FileOutputStream vcardFos = null;
                 try {
-                    vcard = new File(Environment.getExternalStorageDirectory().getPath() + File.pathSeparator + "vcard.vcf");
+                    vcard = new File(context.getExternalFilesDir("barqr").getPath() + File.pathSeparator + "vcard.vcf");
                     vcardFos = new FileOutputStream(vcard);
                     OutputStreamWriter vcardWriter = new OutputStreamWriter(vcardFos);
                     vcardWriter.write(rawScanData);
@@ -318,8 +317,13 @@ public class ScanData {
                     vcardFos.close();
 
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(vcard),"text/x-vcard"); //storage path is path of your vcf file and vFile is name of that file.
+                    Uri vcardUri = FileProvider.getUriForFile(context,
+                            context.getApplicationContext().getPackageName() + ".provider", vcard);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(vcardUri,"text/x-vcard");
                     context.startActivity(intent);
+
+                    vcardFos.close();
 
                 } catch (IOException e) {
                     e.printStackTrace();
